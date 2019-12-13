@@ -1,5 +1,7 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+const secret = process.env.SECRET;
 const AuthController = {};
 
 AuthController.register = async (req, res) => {
@@ -21,7 +23,7 @@ AuthController.register = async (req, res) => {
   if (!email) {
     messages.push({ text: "Please write your email" });
   } else if (email.length > 200) {
-    messages.push({ text: "Your name can only have 200 characters" });
+    messages.push({ text: "Your email can only have 200 characters" });
   }
 
   if (!password) {
@@ -69,8 +71,41 @@ AuthController.register = async (req, res) => {
   });
 };
 
-AuthController.login = (req, res) => {
-  res.json({ auth: "login" });
+AuthController.login = async (req, res) => {
+  const { email, password } = req.body;
+  const messages = [];
+
+  if (!email) {
+    messages.push({ text: 'Please write your email' });
+  }
+
+  if (!password) {
+    messages.push({ text: 'Please write your password' });
+  }
+
+  if (messages.length > 0) {
+    return res.json({ messages });
+  }
+
+  const user = await User.findOne({ email });
+  
+  if (!user) {
+    messages.push({ text: 'Email doesn\'t exist, please verify your email' });
+    return res.json({ messages });
+  }
+
+  const match = await user.validatePassword(password);
+
+  if (!match) {
+    messages.push({ text: 'Incorrect password' });
+    return res.json({ messages });
+  }
+
+  const token = jwt.sign({ id: user._id }, secret, {
+    expiresIn: 60 * 60 * 24
+  });
+
+  return res.json({ token });
 };
 
 module.exports = AuthController;

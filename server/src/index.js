@@ -22,8 +22,9 @@ app.use(express.json());
 
 // routes
 app.use(require('./routes/authRoutes'));
+app.use(require('./routes/remindersRoutes'));
 
 // listening the server
 app.listen(app.get('port'), () => {
-    console.log(`Server listening on http://localhost:${app.get('port')} 🌎`);
+    console.log(`Server listening on http://localhost:${app.get('port')} 🌎`);    
 });
