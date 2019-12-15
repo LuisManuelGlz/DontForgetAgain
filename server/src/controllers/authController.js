@@ -1,13 +1,20 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const secret = process.env.SECRET;
 const AuthController = {};
 
+const secret = process.env.SECRET;
+
+// método para registrar usuario
 AuthController.register = async (req, res) => {
-  const { firstName, lastName, email, password, password2 } = req.body;
+  let { firstName, lastName, email, password, password2 } = req.body;
   const messages = [];
 
+  firstName = firstName.trim();
+  lastName = lastName.trim();
+  email = email.trim();
+
+  // validaciones
   if (!firstName) {
     messages.push({ text: "Please write your first name" });
   } else if (firstName.length > 250) {
@@ -44,10 +51,12 @@ AuthController.register = async (req, res) => {
     }
   }
 
+  // si hubo errores manda los errores al front
   if (messages.length > 0) {
     return res.json({ messages });
   }
 
+  // verificamos que el email no se repita
   const userEmail = await User.findOne({ email });
 
   if (userEmail) {
@@ -56,9 +65,10 @@ AuthController.register = async (req, res) => {
     return res.json({ messages });
   }
 
+  // creamos un nuevo usuario
   const newUser = new User({ firstName, lastName, email, password });
 
-  newUser.password = await newUser.encryptPassword(password);
+  newUser.password = await newUser.encryptPassword(password); // encriptamos
   await newUser.save()
   .then(() => {
     messages.push({ text: 'You have been successfully registered, you can now login' });
@@ -71,10 +81,12 @@ AuthController.register = async (req, res) => {
   });
 };
 
+// método para crear la sesión del usuario
 AuthController.login = async (req, res) => {
   const { email, password } = req.body;
   const messages = [];
 
+  // validaciones
   if (!email) {
     messages.push({ text: 'Please write your email' });
   }
@@ -83,10 +95,12 @@ AuthController.login = async (req, res) => {
     messages.push({ text: 'Please write your password' });
   }
 
+  // si hubo errores los manda al front
   if (messages.length > 0) {
     return res.json({ messages });
   }
 
+  // buscamos el email
   const user = await User.findOne({ email });
   
   if (!user) {
@@ -94,6 +108,7 @@ AuthController.login = async (req, res) => {
     return res.json({ messages });
   }
 
+  // validamos que la contraseña sea correcta
   const match = await user.validatePassword(password);
 
   if (!match) {
@@ -101,6 +116,7 @@ AuthController.login = async (req, res) => {
     return res.json({ messages });
   }
 
+  // creamos y firmamos token
   const token = jwt.sign({ id: user._id }, secret, {
     expiresIn: 60 * 60 * 24
   });

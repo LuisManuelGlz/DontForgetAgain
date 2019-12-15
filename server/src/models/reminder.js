@@ -1,5 +1,6 @@
 const { model, Schema } = require('mongoose');
 
+// modelo Reminder
 const ReminderSchema = new Schema({
     title: {
         type: String,
@@ -8,6 +9,10 @@ const ReminderSchema = new Schema({
     },
     reminderDate: {
         type: Date,
+        required: true
+    },
+    repeat: {
+        type: String,
         required: true
     },
     creationDate: {
