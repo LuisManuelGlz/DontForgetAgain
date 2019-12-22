@@ -11,9 +11,17 @@ const ReminderSchema = new Schema({
         type: Date,
         required: true
     },
+    reminderTime: {
+        type: String,
+        required: true
+    },
     repeat: {
         type: String,
         required: true
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     },
     creationDate: {
         type: Date,

@@ -6,7 +6,7 @@ const helpers = {};
 // método para autenticar usuario
 helpers.isAuthenticated = async (req, res, next) => {
     // obtenemos el token
-    const token = req.headers['x-access-token'].split(' ')[1];
+    let token = req.headers['x-access-token'];
 
     if (!token) {
         return res.json({ errors: ['No authorized'] });
@@ -14,6 +14,7 @@ helpers.isAuthenticated = async (req, res, next) => {
 
     // decodificamos
     try {
+        token = token.split(' ')[1];
         const decoded = await jwt.verify(token, secret);
         req.userId = decoded.id;
         next();
