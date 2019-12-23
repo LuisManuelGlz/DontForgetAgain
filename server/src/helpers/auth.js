@@ -9,7 +9,7 @@ helpers.isAuthenticated = async (req, res, next) => {
     let token = req.headers['x-access-token'];
 
     if (!token) {
-        return res.json({ errors: ['No authorized'] });
+        return res.status(401).json({ errors: [{ text: 'No authorized' }] });
     }
 
     // decodificamos
@@ -19,7 +19,7 @@ helpers.isAuthenticated = async (req, res, next) => {
         req.userId = decoded.id;
         next();
     } catch (error) {
-        return res.json({ errors: ['Failed authentication'] });
+        return res.status(500).json({ errors: [{ text: 'Failed authentication' }] });
     }
 };
 
