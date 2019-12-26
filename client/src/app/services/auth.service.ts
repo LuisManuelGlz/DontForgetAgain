@@ -20,9 +20,8 @@ export class AuthService {
           const token = response.token;
           
           if (token) {
-            localStorage.setItem('token', token);
+            localStorage.setItem('token', 'Bearer ' + token);
             this.decodedToken = this.jwtHelper.decodeToken(token);
-            console.log(this.decodedToken);
           }
         })
       );
