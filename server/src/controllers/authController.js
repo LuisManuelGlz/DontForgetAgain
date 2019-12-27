@@ -115,7 +115,7 @@ AuthController.login = async (req, res) => {
   }
 
   // creamos y firmamos token
-  const token = jwt.sign({ id: user._id, uniqueName: user.firstName }, secret, {
+  const token = jwt.sign({ id: user._id, firstName: user.firstName }, secret, {
     expiresIn: 60 * 60 * 24
   });
 

@@ -15,7 +15,7 @@
 
       <div *ngIf="isLoggedIn()" class="dropdown text-light mt-1" ngbDropdown>
         <a class="dropdown-toggle" ngbDropdownToggle>
-          Welcome <span title="This is your beatiful name &lt;3">{{ authService.decodedToken?.uniqueName }}</span>
+          Welcome <span title="This is your beatiful name &lt;3">{{ authService.decodedToken?.firstName }}</span>
         </a>
 
         <div class="dropdown-menu" ngbDropdownMenu>

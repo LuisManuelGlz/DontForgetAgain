@@ -10,7 +10,7 @@ export class ReminderService {
   constructor(private http: HttpClient) { }
 
   getReminders() {
-    const token = localStorage.getItem('token');
+    const token = 'Bearer ' + localStorage.getItem('token');
 
     const headers = new HttpHeaders()
       .set('x-access-token', token);
