@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+const headers = new HttpHeaders()
+  .set('x-access-token', 'Bearer ' + localStorage.getItem('token'));
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,11 +13,11 @@ export class ReminderService {
   constructor(private http: HttpClient) { }
 
   getReminders() {
-    const token = 'Bearer ' + localStorage.getItem('token');
-
-    const headers = new HttpHeaders()
-      .set('x-access-token', token);
     
     return this.http.get(this.baseUrl, { headers });
+  }
+
+  addReminder(model: any) {
+    return this.http.post(this.baseUrl + 'add', model, { headers });
   }
 }

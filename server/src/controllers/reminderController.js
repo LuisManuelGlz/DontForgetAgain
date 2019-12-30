@@ -4,7 +4,7 @@ const ReminderController = {};
 
 // método para obtener todos los reminders
 ReminderController.getReminders = (req, res) => {
-    Reminder.find({ userId: req.userId }).sort({ reminderDate: 'asc' })
+    Reminder.find({ userId: req.userId }, '-userId -creationDate').sort({ creationDate: 'asc' })
     .then((reminders) => {
         return res.status(200).json(reminders);
     })
@@ -16,11 +16,10 @@ ReminderController.getReminders = (req, res) => {
 
 // método para agregar un reminder
 ReminderController.addReminder = (req, res) => {
-    let { title, reminderDate, reminderTime, repeat } = req.body;
+    let { start, end, title, color } = req.body;
     const errors = [];
     
     title = title.trim();
-    repeat = repeat.trim();
     
     // validaciones
     if (!title) {
@@ -29,25 +28,12 @@ ReminderController.addReminder = (req, res) => {
         errors.push({ text: "Your title can only have 250 characters" });
     }
 
-    if (!reminderDate || !/^\d{4}\-\d{1,2}\-\d{1,2}$/.test(reminderDate)) {
-        errors.push({ text: "Please set a valid date" });
-    }
-
-    if (!reminderTime || !/^(((1[0-2])|([1-9])):[0-5][0-9]\s(AM|PM)|((([0-1][0-9])|(2[0-3])):[5-9][0-9]))$/.test(reminderTime)) {
-        errors.push({ text: "Please set a valid time" });
-    }
-
-    if (!repeat) {
-        errors.push({ text: "Please select the reminder repeat" });
-    }
-
     // si hubo errores manda los errores al front
     if (errors.length > 0) {
         return res.status(400).json({ errors });
     }
 
-    const newReminder = new Reminder({ title, reminderDate, reminderTime, repeat, userId: req.userId });
-    console.log(newReminder);
+    const newReminder = new Reminder({ start, end, title, color, userId: req.userId });
     newReminder.save()
     .then(() => {
         return res.status(201).json('Reminder added');
@@ -56,7 +42,6 @@ ReminderController.addReminder = (req, res) => {
         console.log(err);
         return res.status(500).json(err);
     });
-
 };
 
 // método para editar un reminder

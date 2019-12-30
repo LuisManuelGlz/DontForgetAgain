@@ -16,16 +16,5 @@ export class RemindersPanelComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getReminders();
-  }
-
-  getReminders(): void {
-    this.reminderService.getReminders()
-      .subscribe(response => {
-        this.reminders = response;
-      }, error => {
-        const messages = error.error.errors;
-        messages.map(message => this.alertifyService.error(message.text));
-      });
   }
 }

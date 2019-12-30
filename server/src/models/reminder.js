@@ -2,22 +2,34 @@ const { model, Schema } = require('mongoose');
 
 // modelo Reminder
 const ReminderSchema = new Schema({
+    start: {
+        type: Date,
+        required: true
+    },
+    end: {
+        type: Date
+    },
     title: {
         type: String,
         required: true,
         max: 250
     },
-    reminderDate: {
-        type: Date,
-        required: true
+    color: {
+        primary: {
+            type: String,
+            required: true
+        }
     },
-    reminderTime: {
-        type: String,
-        required: true
+    resizable: {
+        beforeStart: {
+            type: Boolean
+        },
+        afterEnd: {
+            type: Boolean
+        }
     },
-    repeat: {
-        type: String,
-        required: true
+    draggable: {
+        type: Boolean
     },
     userId: {
         type: Schema.Types.ObjectId,
